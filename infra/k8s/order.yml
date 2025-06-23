@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order
+  template:
+    metadata:
+      labels:
+        app: order
+    spec:
+      initContainers:
+        - name: wait-for-nats
+          image: busybox
+          command: ['sh', '-c', 'until nc -z nats-service 4222; do echo "waiting for nats..."; sleep 2; done']
+      containers:
+        - name: order
+          image: ken027/ticketing-order-service
+          envFrom:
+            - configMapRef:
+                name: order-env
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  type: ClusterIP
+  selector:
+    app: order
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      name: order
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-deployment-mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-mongo
+  template:
+    metadata:
+      labels:
+        app: order-mongo
+    spec:
+      containers:
+        - name: order-mongo
+          image: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-mongo-service
+spec:
+  selector:
+    app: order-mongo
+  ports:
+    - name: order-mongo-port
+      protocol: TCP
+      port: 27017
+      targetPort: 27017

@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ticket-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ticket
+  template:
+    metadata:
+      labels:
+        app: ticket
+    spec:
+      initContainers:
+        - name: wait-for-nats
+          image: busybox
+          command: ['sh', '-c', 'until nc -z nats-service 4222; do echo "waiting for nats..."; sleep 2; done']
+      containers:
+        - name: ticket
+          image: ken027/ticketing-ticket-service
+          envFrom:
+            - configMapRef:
+                name: ticket-env
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ticket-service
+spec:
+  type: ClusterIP
+  selector:
+    app: ticket
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      name: ticket
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ticket-deployment-mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ticket-mongo
+  template:
+    metadata:
+      labels:
+        app: ticket-mongo
+    spec:
+      containers:
+        - name: ticket-mongo
+          image: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ticket-mongo-service
+spec:
+  selector:
+    app: ticket-mongo
+  ports:
+    - name: ticket-mongo-port
+      protocol: TCP
+      port: 27017
+      targetPort: 27017
