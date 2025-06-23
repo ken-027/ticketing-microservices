@@ -16,6 +16,10 @@ spec:
         - name: wait-for-nats
           image: busybox
           command: ['sh', '-c', 'until nc -z nats-service 4222; do echo "waiting for nats..."; sleep 2; done']
+
+        - name: wait-for-mongodb
+          image: busybox
+          command: ['sh', '-c', 'until nc -z order-mongo-service 27017; do echo "waiting for mongodb..."; sleep 2; done']
       containers:
         - name: order
           image: ken027/ticketing-order-service
