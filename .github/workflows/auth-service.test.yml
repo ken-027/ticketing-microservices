@@ -1,6 +1,8 @@
-name: Ticket Service Tests
+name: Auth Service Tests
 on:
-  pull_request
+  pull_request:
+    paths:
+      - 'auth-service/**'
 
 jobs:
   build:
@@ -10,6 +12,6 @@ jobs:
         uses: actions/checkout@v3
 
       - name: 🧪 Run dev tests
-        run: cd ticket-service && npm install && npm run test:ci
+        run: cd auth-service && npm install && npm run test:ci
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
