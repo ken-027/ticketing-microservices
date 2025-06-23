@@ -5,6 +5,7 @@ import { handlingCloseConnection, natsWrapper } from "@ksoftdev/core";
 import eventsListener from "./config/events-listener";
 
 app.listen(PORT, async () => {
+    console.log(`Payment service initializing...`);
     await natsWrapper.connect(NATS_CLUSTER_ID, NATS_CLIENT_ID, NATS_URL);
     handlingCloseConnection();
 
