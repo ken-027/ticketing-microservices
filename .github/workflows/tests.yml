@@ -6,5 +6,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: cd auth-service && npm install && npm run test:ci
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🧪 Run dev tests
+        run: cd auth-service && npm install && npm run test:ci
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
