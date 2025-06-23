@@ -39,7 +39,7 @@ The service exposes the following RESTful endpoints under the `/api/v1/orders` p
 | `NATS_URL`                | The URL of the NATS Streaming Server.           | `http://nats-srv:4222`  |
 | `MONGO_URL`               | The connection string for the MongoDB database. | `mongodb://order-mongo-srv:27017/order` |
 | `JWT_KEY`                 | Secret key for JWT verification.                | `your-jwt-secret`       |
-| `EXPIRATION_WINDOW_SECONDS`| The time in seconds before a created order expires. | `900`                   |
+| `EXPIRATION_MINUTES`| The time in minutes before a created order expires. | `15`                   |
 | `QUEUE_GROUP_NAME`        | NATS queue group name.                          | `order-service`         |
 
 
