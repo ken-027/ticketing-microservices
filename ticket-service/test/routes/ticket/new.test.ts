@@ -1,6 +1,8 @@
 import request from "supertest";
 import app from "../../../src/app";
 import natsWrapper from "../../../__mocks__/nats-wrapper.mock";
+import TicketModel from "../../../src/models/ticket.model";
+import mongoose from "mongoose";
 
 describe("Ticket create feature", () => {
     it("should verify that the POST /api/v1/tickets route exists", async () => {
@@ -65,7 +67,7 @@ describe("Ticket create feature", () => {
         expect(response.body.id).toBeDefined();
     });
 
-    it("should not allow creating a duplicate ticket with the same title and price for the same user", async () => {
+    it("should not allow creating a ticket that has an order exists", async () => {
         const cookie = signin();
 
         const response = await request(app)
@@ -80,6 +82,12 @@ describe("Ticket create feature", () => {
         expect(response.body.title).toEqual(title);
         expect(response.body.price).toEqual(price);
         expect(response.body.id).toBeDefined();
+
+        const ticket = await TicketModel.findById(response.body.id);
+
+        expect(ticket).toBeDefined();
+        ticket!.set({ orderId: new mongoose.Types.ObjectId().toHexString() });
+        await ticket!.save();
 
         await request(app)
             .post("/api/v1/tickets")
