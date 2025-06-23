@@ -55,22 +55,22 @@ For each service (`auth-service`, `ticket-service`, `order-service`, `expiration
 Once you have created the `.env` file for each service, run the following commands from the project root to create the necessary Kubernetes resources:
 
 ```bash
-kubectl create configmap auth-env --from-file=auth-service/.env
+kubectl create configmap auth-env --from-env-file=auth-service/.env
 ```
 ```bash
-kubectl create configmap expiration-env --from-file=expiration-service/.env
-```
-
-```bash
-kubectl create configmap order-env --from-file=order-service/.env
+kubectl create configmap expiration-env --from-env-file=expiration-service/.env
 ```
 
 ```bash
-kubectl create configmap payment-env --from-file=payment-service/.env
+kubectl create configmap order-env --from-env-file=order-service/.env
 ```
 
 ```bash
-kubectl create configmap ticket-env --from-file=ticket-service/.env
+kubectl create configmap payment-env --from-env-file=payment-service/.env
+```
+
+```bash
+kubectl create configmap ticket-env --from-env-file=ticket-service/.env
 ```
 
 

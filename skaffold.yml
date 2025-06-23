@@ -48,8 +48,10 @@ build:
           - src: 'src/**/*.ts'
             dest: .
 profiles:
-  - name: ticketing-prod
+  - name: ticketing-docker-prod
     build:
+      local:
+        push: false
       artifacts:
         - image: ken027/ticketing-auth-service
           context: auth-service
@@ -57,6 +59,10 @@ profiles:
             dockerfile: Dockerfile.prod
         - image: ken027/ticketing-ticket-service
           context: ticket-service
+          docker:
+            dockerfile: Dockerfile.prod
+        - image: ken027/ticketing-order-service
+          context: order-service
           docker:
             dockerfile: Dockerfile.prod
         - image: ken027/ticketing-expiration-service
